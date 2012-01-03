@@ -13,10 +13,15 @@ Setup
 Requirements/Components
 =======================
 
+Software
+--------
+
+1. Arduino IDE v0023
+
 Electronic Components
 ---------------------
 
-1. Arduino UNO compatible development board.
+1. Arduino UNO compatible development board
 2. Arduino WiFly or Ethernet Shield
 3. 950nm IR Transmitting LED
 

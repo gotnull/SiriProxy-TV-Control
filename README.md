@@ -10,6 +10,13 @@ Setup
 2. rvmsudo siriproxy update.
 3. Restart SiriProxy.
 
+Prerequisite Ruby Gems
+----------------------
+
+1. Nokogiri (`gem install nokogiri`)
+2. HTTParty (`gem install httparty`)
+3. JSON (`gem install json`)
+
 Requirements/Components
 =======================
 

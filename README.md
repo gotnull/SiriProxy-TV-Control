@@ -4,11 +4,7 @@ SiriProxy-TV-Control
 Allows the remote controlling of an LG TV and Sony Amplifier using an Arduino UNO compatible development board. It's not limited to this hardware, you'll just have to decode the IR signals yourself.
 
 Setup
------
-
-1. Copy the contents of `config-info.yml` into your `~/.siriproxy/config.yml`.
-2. rvmsudo siriproxy update.
-3. Restart SiriProxy.
+=====
 
 Prerequisite Ruby Gems
 ----------------------
@@ -16,6 +12,13 @@ Prerequisite Ruby Gems
 1. Nokogiri (`gem install nokogiri`)
 2. HTTParty (`gem install httparty`)
 3. JSON (`gem install json`)
+
+Configure SiriProxy
+-------------------
+
+1. Copy the contents of `config-info.yml` into your `~/.siriproxy/config.yml`.
+2. rvmsudo siriproxy update.
+3. Restart SiriProxy.
 
 Requirements/Components
 =======================

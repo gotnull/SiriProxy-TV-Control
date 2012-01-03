@@ -11,15 +11,17 @@ Setup
 3. Restart SiriProxy.
 
 Requirements/Components
------------------------------
+=======================
 
-# Electronic Components
+Electronic Components
+---------------------
 
 1. Arduino UNO compatible development board.
 2. Arduino WiFly or Ethernet Shield
 3. 950nm IR Transmitting LED
 
-# Electronic Components to Decode IR Signals
+Electronic Components to Decode IR Signals
+------------------------------------------
 
 1. 37Khz IR Receiver LED (Code not provided to Decode remote signals, you'll have to roll your own or Google it yourself)
 2. 47ohm Resistor

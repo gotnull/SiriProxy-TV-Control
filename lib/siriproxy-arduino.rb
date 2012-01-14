@@ -4,15 +4,30 @@ require 'json'
 require 'open-uri'
 require 'httparty'
 require 'nokogiri'
+require 'serialport'
 require 'pp'
 
 class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 
 	def initialize(config = {})
+		# Channel configuration
 		@custom_channels = { abctwo: 22, abcthree: 23, abcn: 24, seventwo: 72, sevenmate: 73, go: 99, gem: 90, one: 1, sbs: 3, sbstwo: 32 }
-		@responses = ["One moment.", "Your wish is my command.", "Yes, my master.", "Please hold.", "Just a second.", "Just chill.", "Hang on a second.", "Hold on a second.", "Just a moment.", "Give me a second."]
-		@responses_okay = ["Good choice.", "Fair enough.", "No problem.", "Okay then.", "Fine with me.", "If you say so."]
-		@responses_watch = ["Would you like to watch it?", "Are you sure you want to watch this crap?", "Want me to change the station for you?", "Should I change the channel for you?"]
+		
+		# Siri responses
+		@responses = [ "One moment.", "Please hold.", "Just a second.", "Just chill.", "Hang on a second.", "Hold on a second.", "Just a moment.", "Give me a second." ]
+		@responses_okay = [ "Good choice.", "Fair enough.", "No problem.", "Okay then.", "Fine with me.", "If you say so." ]
+		@responses_watch = [ "Would you like to watch it?", "Are you sure you want to watch this crap?", "Want me to change the station for you?", "Should I change the channel for you?" ]
+		@response_error = [ "Something went wrong.", "Ouch! Something broke.", "Sorry, it's not working." ]
+		
+		# Arduino configuration
+		@host = "10.1.1.45"
+		@port = 8000
+		
+		# Xbee configuration
+		@serial_device = "/dev/ttyUSB0"
+		@serial_bps = 9600
+		@serial_par = 8
+		@serial_bits = 1
 	end
 
 	def change_channel(number)
@@ -22,22 +37,24 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 		Thread.new {
 
 			begin
-				t = TCPSocket.new("10.1.1.45", 8000)
+				t = TCPSocket.new(@host, @port)
 			rescue
-				say "Something broke."
+				say @response_error[rand(@response_error.size)]
 			else
 				t.print "{channel,#{number}}"
-				say @responses[rand(@responses.size)]
 				t.close
+
+				say "I changed the channel for you."
 			end
 
-			request_completed 
+			request_completed
 
 		}
 
 	end
 
 	def convert_channel(channel)
+	
 		# valid channels:
 		# 2 = (2)
 	  
@@ -104,6 +121,7 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 		end
 
 		return channel
+		
 	end
 
 	def show_info(channel)
@@ -114,7 +132,7 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 		
 			number = channel
 
-			# convert channel code to 
+			# convert channel code to
 			# correct channel name
 			channel = convert_channel(channel)
 
@@ -172,11 +190,12 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 					# so go back until we find valid info from the beginning of the show
 					current_time = current_time - (1 * 60)
 					current_time_str = current_time.strftime("%l.%M+%p").downcase
+					
 					attempts += 1
 				end
 			end
 
-			say "Here is what's playing on #{number} - #{program_name}"
+			say "Here is what's playing on #{number}: #{program_name}"
 
 			object = SiriAddViews.new
 
@@ -207,29 +226,56 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 		}
     
 	end
+	
+	def send_serial(command, siri_output)
+	
+		# Say a random response:
+		say @responses[rand(@responses.size)]
+		
+		Thread.new {
+		
+			begin
+				
+				sp = SerialPort.new(@serial_device, @serial_bps, @serial_par, @serial_bits, SerialPort::NONE)
+				sp.print(command)
+				sp.close
+
+				say siri_output
+				
+			rescue Exception => e
+				
+				say "Sorry, I encountered an error: #{e.inspect}"
+				say "Trying TCP. One moment."
+				
+				begin
+				
+					tcp = TCPSocket.new(@host, @port)
+					tcp.print(command)
+					tcp.close
+
+					say siri_output
+					
+				rescue Exception => e
+					
+					say "Sorry, I encountered an error: #{e.inspect}"
+					
+				end
+				
+			ensure
+			
+				request_completed
+				
+			end
+			
+		}
+
+	end
 
 	# Example: "Siri, turn the TV/amp/aircon on/off?"
 	listen_for /(tv|amp|amplifier|aircon|air-conditioner) (off|on)/i do |device|
 
-		# Say a random response:
-		say @responses[rand(@responses.size)]
-
-		Thread.new {
-
-			begin
-				t = TCPSocket.new("10.1.1.45", 8000)
-			rescue
-				say "Ouch. Something just broke."
-			else
-				t.print "{power,#{device.downcase}}"
-				say "Sent power to the #{device}."
-				t.close
-			end
-
-			request_completed 
-
-		}
-
+		send_serial("{power,#{device.downcase}}", "Sent power to the #{device}.")
+		
 	end
 
 	# Example: "Siri, mute/unmute the TV/Amp."
@@ -241,16 +287,17 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 		Thread.new {
 
 			begin
-				t = TCPSocket.new("10.1.1.45", 8000)
+				t = TCPSocket.new(@host, @port)
 			rescue
-				say "Something went wrong."
+				say @response_error[rand(@response_error.size)]
 			else
 				t.print "{source,mute}"
-				say "I muted the TV for you."
 				t.close
+
+				say "I muted the TV for you."
 			end
 
-			request_completed 
+			request_completed
 
 		}
 
@@ -260,7 +307,7 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 	listen_for /list of (channels|shows|programs)/i do |name|
 		
 		# Say a random response:
-		say @responses[rand(@responses.size)] 
+		say @responses[rand(@responses.size)]
 		
 		object = SiriAddViews.new
 
@@ -313,21 +360,22 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 	listen_for /(show|hide) channel (info|information|into)/i do |info|
 
 		# Say a random response:
-		say @responses[rand(@responses.size)] 
+		say @responses[rand(@responses.size)]
 
 		Thread.new {
 
 			begin
-				t = TCPSocket.new("10.1.1.45", 8000)
+				t = TCPSocket.new(@host, @port)
 			rescue
-				say "Something went wrong."
+				say @response_error[rand(@response_error.size)]
 			else
 				t.print "{info,#{info.downcase}}"
-				say "Showing you channel information."
 				t.close
+
+				say "Showing you channel information."
 			end
 
-			request_completed 
+			request_completed
 
 		}
 
@@ -337,21 +385,22 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 	listen_for /(change|modify) tv (input|source)/i do |info|
 
 		# Say a random response:
-		say @responses[rand(@responses.size)] 
+		say @responses[rand(@responses.size)]
 
 		Thread.new {
 
 			begin
-				t = TCPSocket.new("10.1.1.45", 8000)
+				t = TCPSocket.new(@host, @port)
 			rescue
-				say "Something went wrong."
+				say @response_error[rand(@response_error.size)]
 			else
 				t.print "{input,#{info.downcase}}"
-				say "Changed TV input."
 				t.close
+
+				say "Changed TV input."
 			end
 
-			request_completed 
+			request_completed
 
 		}
 
@@ -366,16 +415,17 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 		Thread.new {
 
 			begin
-				t = TCPSocket.new("10.1.1.45", 8000)
+				t = TCPSocket.new(@host, @port)
 			rescue
-				say "Something went wrong."
+				say @response_error[rand(@response_error.size)]
 			else
 				t.print "{source,#{source.downcase}}"
-				say "Source changed to #{source.upcase}."
 				t.close
+
+				say "Source changed to #{source.upcase}."
 			end
 
-			request_completed 
+			request_completed
 
 		}
 
@@ -385,21 +435,22 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 	listen_for /volume up by ([0-9,]*[0-9])/i do |number|
 
 		# Say a random response:
-		say @responses[rand(@responses.size)] 
+		say @responses[rand(@responses.size)]
 
 		Thread.new {
 
 			begin
-				t = TCPSocket.new("10.1.1.45", 8000)
+				t = TCPSocket.new(@host, @port)
 			rescue
-				say "Something went wrong."
+				say @response_error[rand(@response_error.size)]
 			else
 				t.print "{volumeup,#{number}}"
-				say "Volume turned up by #{number}."
 				t.close
+
+				say "Volume turned up by #{number}."
 			end
 
-			request_completed 
+			request_completed
 
 		}
 
@@ -414,23 +465,24 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 		Thread.new {
 
 			begin
-				t = TCPSocket.new("10.1.1.45", 8000)
+				t = TCPSocket.new(@host, @port)
 			rescue
-				say "Something went wrong."
+				say @response_error[rand(@response_error.size)]
 			else
 				t.print "{volumedown,#{number}}"
-				say "Volume turned down by #{number}."
 				t.close
+
+				say "Volume turned down by #{number}."
 			end
 
-			request_completed 
+			request_completed
 
 		}
 
 	end
 
 	# Example: "Siri, turn the volume up/down."
-	listen_for /volume (up|down)/i do |volume|
+	listen_for /volume (up|down)/i do |setting|
 
 		# Say a random response:
 		say @responses[rand(@responses.size)]
@@ -438,13 +490,14 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 		Thread.new {
 
 			begin
-				t = TCPSocket.new("10.1.1.45", 8000)
+				t = TCPSocket.new(@host, @port)
 			rescue
-				say "Something went wrong."
+				say @response_error[rand(@response_error.size)]
 			else
-				t.print "{volume#{volume},8}"
-				say "Volume turned #{volume}."
+				t.print "{volume#{setting.downcase},8}"
 				t.close
+
+				say "Volume turned #{setting.upcase}."
 			end
 
 		  request_completed
@@ -456,29 +509,54 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 	# Example: "Siri, what's on channel 72?"
 	listen_for /on channel ([0-9,]*[0-9])/i do |number|
 
-		show_info number
+		show_info(number)
 
 	end
 
 	# Example: "Siri, what's on GO?"
 	listen_for /on (#{Regexp.union({ abctwo: 22, abcthree: 23, abcn: 24, seventwo: 72, sevenmate: 73, go: 99, gem: 90, one: 1, sbs: 3, sbstwo: 32 }.keys.map(&:to_s))})/i do |name|
 
-		show_info @custom_channels[name.to_sym]
+		show_info(@custom_channels[name.to_sym])
 
 	end
 
 	# Example: "Siri, change to channel GO."
 	listen_for /channel (#{Regexp.union({ abctwo: 22, abcthree: 23, abcn: 24, seventwo: 72, sevenmate: 73, go: 99, gem: 90, one: 1, sbs: 3, sbstwo: 32 }.keys.map(&:to_s))})/i do |name|
 
-		change_channel @custom_channels[name.to_sym]
+		change_channel(@custom_channels[name.to_sym])
 		
 	end
 
-	#Example: "Siri, change to channel 72."
+	# Example: "Siri, change to channel 72."
 	listen_for /channel ([0-9,]*[0-9])/i do |number|
 
-		change_channel number
+		change_channel(number)
 
+	end
+	
+	# Example: "Siri, turn the arcade machine on/off."
+	listen_for /arcade machine (off|on)/i do |value|
+		
+		# Say a random response:
+		say @responses[rand(@responses.size)]
+
+		Thread.new {
+
+			begin
+				t = TCPSocket.new(@host, @port)
+			rescue
+				say @response_error[rand(@response_error.size)]
+			else
+				t.print "{pwt,#{value.downcase}}"
+				t.close
+				
+				say "I turned the Arcade Machine #{value.upcase} for you."
+			end
+
+		  request_completed
+
+		}
+		
 	end
   
 end

@@ -42,3 +42,13 @@ Decoding Remote Codes
 1. Infrared Receiver Diode
 2. 47ohm Resistor
 3. Breadboard and Cables/Wires
+
+Licensing
+=========
+
+Re-use of my code is fine under a Creative Commons 3.0 Non-commercial, Attribution, Share-Alike license. In short, this means that you can use my code, modify it, do anything you want. Just don't sell it and make sure to give me a shout-out. Also, you must license your derivatives under a compatible license (sorry, no closed-source derivatives). If you would like to purchase a more permissive license (for a closed-source and/or commercial license), please contact me directly. See the Creative Commons site for more information.
+
+Disclaimer
+----------
+
+This software is provided as-is with no warranty whatsoever.

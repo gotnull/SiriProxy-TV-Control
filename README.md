@@ -32,13 +32,13 @@ Electronic Components
 ---------------------
 
 1. Arduino UNO compatible development board
-2. Arduino WiFly or Ethernet Shield
-3. 950nm IR Transmitting LED
+2. WiFly Shield, Ethernet Shield or Xbee Shield
+3. 2 x Xbee Modules (for Xbee functionality)
+3. 38Khz IR (950nm) LED
 
 Electronic Components to Decode IR Signals
 ------------------------------------------
 
-1. 37Khz IR Receiver LED (Code not provided to Decode remote signals, you'll have to roll your own or Google it yourself)
+1. 37Khz IR Receiver LED (Code not provided to Decode remote signals, you'll have to roll your own or Google it yourself!)
 2. 47ohm Resistor
-3. Breadboard Cables/Wires
-4. Breadboard
+3. Breadboard and Cables/Wires

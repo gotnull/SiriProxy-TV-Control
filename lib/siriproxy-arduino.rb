@@ -19,11 +19,11 @@ class SiriProxy::Plugin::Arduino < SiriProxy::Plugin
 		@responses_watch = [ "Would you like to watch it?", "Are you sure you want to watch this crap?", "Want me to change the station for you?", "Should I change the channel for you?" ]
 		@response_error = [ "Something went wrong.", "Ouch! Something broke.", "Sorry, it's not working." ]
 		
-		# Arduino configuration
+		# Arduino Ethernet/Wifly Shield configuration
 		@host = "10.1.1.45"
 		@port = 8000
 		
-		# Xbee configuration
+		# Xbee Shield configuration
 		@serial_device = "/dev/ttyUSB0"
 		@serial_bps = 9600
 		@serial_par = 8

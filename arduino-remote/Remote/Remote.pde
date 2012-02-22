@@ -89,43 +89,43 @@ void channel(char* numbers) {
 
   for (i = 0; i < 2; i++) {
     if (numbers[i] == '0') {
-      sendCode(tv_channel_0, calculateSize(tv_channel_0));
+      sendCode(tv_channel_0);
       delay(100);
     } 
     else if (numbers[i] == '1') {
-      sendCode(tv_channel_1, calculateSize(tv_channel_1));
+      sendCode(tv_channel_1);
       delay(100);
     } 
     else if (numbers[i] == '2') {
-      sendCode(tv_channel_2, calculateSize(tv_channel_2));
+      sendCode(tv_channel_2);
       delay(100);
     } 
     else if (numbers[i] == '3') {
-      sendCode(tv_channel_3, calculateSize(tv_channel_3));
+      sendCode(tv_channel_3);
       delay(100);
     } 
     else if (numbers[i] == '4') {
-      sendCode(tv_channel_4, calculateSize(tv_channel_4));
+      sendCode(tv_channel_4);
       delay(100);
     } 
     else if (numbers[i] == '5') {
-      sendCode(tv_channel_5, calculateSize(tv_channel_5));
+      sendCode(tv_channel_5);
       delay(100);
     } 
     else if (numbers[i] == '6') {
-      sendCode(tv_channel_6, calculateSize(tv_channel_6));
+      sendCode(tv_channel_6);
       delay(100);
     } 
     else if (numbers[i] == '7') {
-      sendCode(tv_channel_7, calculateSize(tv_channel_7));
+      sendCode(tv_channel_7);
       delay(100);
     } 
     else if (numbers[i] == '8') {
-      sendCode(tv_channel_8, calculateSize(tv_channel_8));
+      sendCode(tv_channel_8);
       delay(100);
     } 
     else if (numbers[i] == '9') {
-      sendCode(tv_channel_9, calculateSize(tv_channel_9));
+      sendCode(tv_channel_9);
       delay(100);
     }
   }
@@ -134,12 +134,12 @@ void channel(char* numbers) {
 void volume(char *command, char* value) {
   for (int i = 0; i < atoi(value); i++) {
     if (strcmp(command, "volumeup") == 0) {
-      sendCode(amp_volume_up, calculateSize(amp_volume_up));
-      sendCode(tv_volume_up, calculateSize(tv_volume_up));
+      sendCode(amp_volume_up);
+      sendCode(tv_volume_up);
     } 
     else if (strcmp(command, "volumedown") == 0) {
-      sendCode(amp_volume_down, calculateSize(amp_volume_down));
-      sendCode(tv_volume_down, calculateSize(tv_volume_down));
+      sendCode(amp_volume_down);
+      sendCode(tv_volume_down);
     }
     delay(300);
   }
@@ -147,30 +147,30 @@ void volume(char *command, char* value) {
 
 void power(char* device) {
   if (strcmp(device, "tv") == 0) {
-    sendCode(trigger_emberplug, calculateSize(trigger_emberplug));
+    sendCode(trigger_emberplug);
     delay(3000);
-    sendCode(tv_power_onoff, calculateSize(tv_power_onoff));
+    sendCode(tv_power_onoff);
   } 
   else if (strcmp(device, "amp") == 0 || strcmp(device, "amplifier") == 0) {
-    sendCode(amp_power_onoff, calculateSize(amp_power_onoff));
+    sendCode(amp_power_onoff);
   } 
   else if (strcmp(device, "air-conditioner") == 0 || strcmp(device, "air-con") == 0 || strcmp(device, "aircon") == 0) {
-    sendCode(aircon_power_onoff, calculateSize(aircon_power_onoff));
+    sendCode(aircon_power_onoff);
   }
 }
 
 void source(char* source) {
   if (strcmp(source,"ps3") == 0) {
-    sendCode(ps3_source, calculateSize(ps3_source));
+    sendCode(ps3_source);
   } 
   else if (strcmp(source,"nintendo") == 0) {
-    sendCode(nintendo_source, calculateSize(nintendo_source));
+    sendCode(nintendo_source);
   } 
   else if (strcmp(source,"xbox") == 0) {
-    sendCode(xbox_source, calculateSize(xbox_source));
+    sendCode(xbox_source);
   } 
   else if (strcmp(source,"mute") == 0) {
-    sendCode(tv_mute, calculateSize(tv_mute));
+    sendCode(tv_mute);
   }
 }
 
@@ -188,15 +188,15 @@ void sendCommand(char *command, char *value) {
     volume(command, value);
   } 
   else if (strcmp(command, "info") == 0) {
-    sendCode(show_hide_info, calculateSize(show_hide_info));
+    sendCode(show_hide_info);
   } 
   else if (strcmp(command, "input") == 0) {
-    sendCode(tv_input, calculateSize(tv_input));
+    sendCode(tv_input);
   }
 }
 
-void sendCode(const prog_uint16_t *pInArray, int nLimit) {
-  for (int i=0; i < nLimit; i=i+2) {
+void sendCode(const prog_uint16_t *pInArray) {
+  for (int i=0; i < calculateSize(pInArray); i=i+2) {
     pulseIR(pgm_read_word(pInArray++));
     delayMicroseconds(pgm_read_word(pInArray++));
   }

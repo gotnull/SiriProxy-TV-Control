@@ -160,28 +160,28 @@ void power(char* device) {
 }
 
 void source(char* source) {
-  if (strcmp(source,"ps3") == 0) {
+  if (strcmp(source, "ps3") == 0) {
     sendCode(ps3_source);
   } 
-  else if (strcmp(source,"nintendo") == 0) {
+  else if (strcmp(source, "nintendo") == 0) {
     sendCode(nintendo_source);
   } 
-  else if (strcmp(source,"xbox") == 0) {
+  else if (strcmp(source, "xbox") == 0) {
     sendCode(xbox_source);
   } 
-  else if (strcmp(source,"mute") == 0) {
+  else if (strcmp(source, "mute") == 0) {
     sendCode(tv_mute);
   }
 }
 
 void sendCommand(char *command, char *value) {
-  if (strcmp(command,"power") == 0) {
+  if (strcmp(command, "power") == 0) {
     power(value);
   } 
-  else if (strcmp(command,"source") == 0) {
+  else if (strcmp(command, "source") == 0) {
     source(value);
   } 
-  else if (strcmp(command,"channel") == 0) {
+  else if (strcmp(command, "channel") == 0) {
     channel(value);
   } 
   else if (strcmp(command, "volumeup") == 0 || strcmp(command, "volumedown") == 0) {

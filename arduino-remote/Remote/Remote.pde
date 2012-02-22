@@ -196,7 +196,7 @@ void sendCommand(char *command, char *value) {
 }
 
 void sendCode(const prog_uint16_t *pInArray, int nLimit) {
-  for (int i=0;i<nLimit;i=i+2) {
+  for (int i=0; i < nLimit; i=i+2) {
     pulseIR(pgm_read_word(pInArray++));
     delayMicroseconds(pgm_read_word(pInArray++));
   }

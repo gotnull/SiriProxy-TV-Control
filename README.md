@@ -3,11 +3,6 @@ SiriProxy-TV-Control
 
 Allows the remote controlling of an LG TV and Sony Amplifier using an Arduino UNO compatible development board. It's not limited to this hardware, you'll just have to decode the IR signals yourself.
 
-Video
-=====
-
-http://www.youtube.com/watch?v=wrGd0kQxRDM
-
 Setup
 =====
 

@@ -90,43 +90,33 @@ void channel(char* numbers) {
   for (i = 0; i < 2; i++) {
     if (numbers[i] == '0') {
       sendCode(tv_channel_0);
-      delay(100);
     } 
     else if (numbers[i] == '1') {
       sendCode(tv_channel_1);
-      delay(100);
     } 
     else if (numbers[i] == '2') {
       sendCode(tv_channel_2);
-      delay(100);
     } 
     else if (numbers[i] == '3') {
       sendCode(tv_channel_3);
-      delay(100);
     } 
     else if (numbers[i] == '4') {
       sendCode(tv_channel_4);
-      delay(100);
     } 
     else if (numbers[i] == '5') {
       sendCode(tv_channel_5);
-      delay(100);
     } 
     else if (numbers[i] == '6') {
       sendCode(tv_channel_6);
-      delay(100);
     } 
     else if (numbers[i] == '7') {
       sendCode(tv_channel_7);
-      delay(100);
     } 
     else if (numbers[i] == '8') {
       sendCode(tv_channel_8);
-      delay(100);
     } 
     else if (numbers[i] == '9') {
       sendCode(tv_channel_9);
-      delay(100);
     }
   }
 }
@@ -200,6 +190,7 @@ void sendCode(const prog_uint16_t *pInArray) {
     pulseIR(pgm_read_word(pInArray++));
     delayMicroseconds(pgm_read_word(pInArray++));
   }
+  delay(100);
 }
 
 int calculateSize(const prog_uint16_t *pInArray) {

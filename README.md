@@ -31,8 +31,7 @@ Your `~/.siriproxy/config.yml` should look something like this:
     - name: 'SiriProxy TV Control'
       path: 'https://github.com/rakusu/SiriProxy-TV-Control.git'
 
-Then run `rvmsudo siriproxy update` from the console.
-Then just start SiriProxy by running `rvmsudo siriproxy server`.
+Then run `rvmsudo siriproxy update` from the console. Then just start SiriProxy by running `rvmsudo siriproxy server`
 
 Requirements/Components
 =======================

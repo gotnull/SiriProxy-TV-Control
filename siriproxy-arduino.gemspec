@@ -4,7 +4,7 @@ $:.push File.expand_path("../lib", __FILE__)
 Gem::Specification.new do |s|
   s.name        = "siriproxy-arduino"
   s.version     = "0.0.1" 
-  s.authors     = ["toddtreece"]
+  s.authors     = ["rakusu"]
   s.email       = [""]
   s.homepage    = ""
   s.summary     = %q{Siri controller for an arduino universal remote}

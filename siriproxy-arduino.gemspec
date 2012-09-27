@@ -21,5 +21,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "json"
   s.add_runtime_dependency "scrapi"
   s.add_runtime_dependency "nokogiri"
+  s.add_runtime_dependency "serialport"
 end
 

@@ -14,9 +14,9 @@ Setup
 Prerequisite Ruby Gems
 ----------------------
 
-1. Nokogiri (`gem install nokogiri`)
-2. HTTParty (`gem install httparty`)
-3. JSON (`gem install json`)
+1. Nokogiri (`rvmsudo gem install nokogiri`)
+2. HTTParty (`rvmsudo gem install httparty`)
+3. JSON (`rvmsudo gem install json`)
 
 Configure SiriProxy
 -------------------

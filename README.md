@@ -17,6 +17,8 @@ Prerequisite Ruby Gems
 1. Nokogiri (`rvmsudo gem install nokogiri`)
 2. HTTParty (`rvmsudo gem install httparty`)
 3. JSON (`rvmsudo gem install json`)
+4. serialport (`rvmsudo gem install serialport`)
+5. scrapi (`rvmsudo gem install scrapi`)
 
 Configure SiriProxy
 -------------------
@@ -29,7 +31,7 @@ Your `~/.siriproxy/config.yml` should look something like this:
       path: './plugins/siriproxy-example'
 
     - name: 'SiriProxy TV Control'
-      path: 'https://github.com/rakusu/SiriProxy-TV-Control.git'
+      git: 'https://github.com/rakusu/SiriProxy-TV-Control.git'
 
 Then run `rvmsudo siriproxy update` from the console. Then just start SiriProxy by running `rvmsudo siriproxy server`
 
